@@ -1,0 +1,54 @@
+[project]
+name = "test-poe-sequence-task"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "bwrob", email = "bartosz.marcin.wroblewski@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "poethepoet>=0.48.0",
+    "pyrefly>=1.3.1",
+    "ruff>=0.16.9",
+]
+
+[project.scripts]
+test-poe-sequence-task = "test_poe_sequence_task:main"
+
+[build-system]
+requires = ["uv_build>=0.12.15,<0.13.0"]
+build-backend = "uv_build"
+
+
+[tool.poe.executor]
+    type = "uv"
+
+
+[tool.poe.tasks.lint]
+    cmd  = "ruff check ."
+    help = "Check code rules using ruff."
+
+[tool.poe.tasks.type-check]
+    cmd  = "pyrefly check --progress-bar no ."
+    help = "Check static typing using pyrefly."
+
+[tool.poe.tasks.code-quality-parallel]
+    help = "Run all code quality checks."
+    ignore_fail = "return_non_zero"
+    output_mode = "buffer"
+    verbosity = -2
+    prefix_max = 14
+    prefix = "{name}           "
+    parallel = [
+        "lint",
+        "type-check",
+    ]
+
+[tool.poe.tasks.code-quality-sequence]
+    help = "Run all code quality checks."
+    ignore_fail = "return_non_zero"
+    sequence = [
+        "lint",
+        "type-check",
+    ]
